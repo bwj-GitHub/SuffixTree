@@ -65,7 +65,6 @@ public class SuffixTree {
 				}
 
 				// Update Iu(S[i])=1 for every node u on path from root to leaf i+1:
-				// FIXME: Is this right?
 				curNode.I[alphabet.getIndex(string[i])] = 1;  // update (3)
 
 				// break if at root?
@@ -137,15 +136,19 @@ public class SuffixTree {
 			if (v != null) {
 				if (v2 == null) {  // from 3A
 					// Head(i) ends ti+1 characters from root on edge e
-					w = new Node(-1, alphabet.length);
-					Edge.insertNode(w, e, headI, string, alphabet);
+					// FIXME: w might already exist:
+					w = findW(e, ti + 1);
+//					w = new Node(-1, alphabet.length);
+//					Edge.insertNode(w, e, headI, string, alphabet);
 				} else {  // from 3B
 					// Head(i) ends Ii characters onto edge e (or on node v'')
 					if (Ii == 0) {
 						w = v3;
 					} else {
-						w = new Node(-1, alphabet.length);
-						Edge.insertNode(w, e, Ii, string, alphabet);
+						// FIXME: w might already exist:
+						w = findW(e, Ii);
+//						w = new Node(-1, alphabet.length);
+//						Edge.insertNode(w, e, Ii, string, alphabet);
 					}
 				}
 			} else {
@@ -205,9 +208,31 @@ public class SuffixTree {
 				System.out.println("--------------");
 			}
 		}
-		
+
 //		System.out.println(root);
 //		System.out.println(root.simpleString(alphabet, ""));
+	}
+
+	/**
+	 * Check if Node w exists offset characters into edge e; otherwise, create it.
+	 * @param e
+	 * @param offset
+	 * @return
+	 */
+	private Node findW(Edge e, int offset) {
+		Node w = null;
+		int eLength = e.length();
+		if (offset < eLength) {
+			// Insert a new Node w into e:
+			w = new Node(-1, alphabet.length);
+			Edge.insertNode(w, e, offset, string, alphabet);
+		} else if (offset == eLength) {
+			// Node w already exists:
+			w = e.childNode;
+		} else {
+			System.out.println("I am still not sure if this can happen!!!!!!!");
+		}
+		return w;
 	}
 
 	private void updateLinkVectors(int i, Node v, Node w) {
@@ -216,10 +241,10 @@ public class SuffixTree {
 			v.L[alphabet.getIndex(string[i])] = w;  // 1
 		}
 
-		// Set all entries in link vector L for w to null:
-		for (int k=0; k < w.L.length; k++) {
-			w.L[k] = null;
-		}
+//		// Set all entries in link vector L for w to null:
+//		for (int k=0; k < w.L.length; k++) {
+//			w.L[k] = null;
+//		}
 	}
 
 	/**
