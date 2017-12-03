@@ -49,6 +49,7 @@ public class TestSuffixTree {
 		}
 		long end0 = System.currentTimeMillis();
 
+		System.out.println("Naive Search:");
 		System.out.println(matches);
 		double searchTime = (double) (end0 - startTime) / 1000.0;  // in seconds
 		System.out.println(String.format("SearchTime = %f", searchTime));
@@ -63,6 +64,7 @@ public class TestSuffixTree {
 		long finishedSearch = System.currentTimeMillis();
 		System.out.println(results);
 		
+		System.out.println("Suffix Tree Search:");
 		double treeBuildTime = (double) (end0 - startTime) / 1000.0;  // in seconds
 		double searchTime = (double) (finishedSearch - end0) / 1000.0;
 		System.out.println(String.format("BuildTime = %f; searchTime = %f",
@@ -74,6 +76,7 @@ public class TestSuffixTree {
 		Alphabet alphabet = new Alphabet("acgt$".toCharArray());
 		String repeated = "attctgctagctgccatgga";  // 20 chars
 		String searchSequence = "taggaattcttatagcacgg";  // 20chars, 'tagg' is unique
+		String longSearchSequence = getRepeatedString(searchSequence, 100);  // 2k chars
 
 		String longString = getRepeatedString(repeated, 1000);  // 20k chars
 		String superLongString = getRepeatedString(longString, 4);  // 80k chars
@@ -96,11 +99,18 @@ public class TestSuffixTree {
 		naiveSearch(test2, searchSequence);
 		System.out.println("--");
 
-		// 80k chars 1 match: 0:
+		// Test 80000 chars 1 match: 0:
 		String test3 = searchSequence + superLongString + "$";
 		testOnString(test3, searchSequence, alphabet);
 		naiveSearch(test3, searchSequence);
 		System.out.println("--");
+		
+		// Test longSearchSequence
+		String test4 = longSearchSequence + longString + longSearchSequence + "$";
+		testOnString(test4, longSearchSequence, alphabet);  // 0, 22k
+		naiveSearch(test4, longSearchSequence);
+		System.out.println("--");
+		
 	}
 
 }
