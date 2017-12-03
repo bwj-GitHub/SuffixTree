@@ -74,6 +74,9 @@ public class Edge {
 
 		// Modify childNode's edge:
 		outEdge.setChildNode(endNode);
+		
+		// Set w's pathDepth
+		w.setPathDepth();
 
 		return new Edge[] {inEdge, outEdge};
 	}

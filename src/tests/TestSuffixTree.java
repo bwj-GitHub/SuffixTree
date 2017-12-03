@@ -95,7 +95,7 @@ public class TestSuffixTree {
 		testOnString(test2, searchSequence, alphabet);
 		naiveSearch(test2, searchSequence);
 		System.out.println("--");
-		
+
 		// 80k chars 1 match: 0:
 		String test3 = searchSequence + superLongString + "$";
 		testOnString(test3, searchSequence, alphabet);
