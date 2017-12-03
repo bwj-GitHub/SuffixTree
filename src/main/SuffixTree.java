@@ -87,21 +87,21 @@ public class SuffixTree {
 					c = string[curNode.parentEdge.start];
 				}
 
-				// Update curNode (finished constructing Ti):
+				// Update curNode:
 				curNode = curNode.parentEdge.parentNode;
 			}
 
 			// Step 3:
 			// Find headI, e, z, and v3 (if each exists)
 			// Determine Head(i):
-			Edge e = null;
+			Edge e = null;  // for step 3
 			Node v3 = null;  // v'' in notes
-			Node z = null;
+			Node z = null;  // for step 3a
 			int headI = 0;
 			if (v != null) {
 				if (v2 == null) {  // Step 3A
 					// Head(i) ends exactly ti + 1 characters from root
-					// select edge beggining with S(i)
+					// select edge beginning with S(i)
 					// edge e = (r, z) exists (and will need to be split)
 					headI = ti + 1;
 					e = root.childEdges[j];
@@ -109,11 +109,10 @@ public class SuffixTree {
 				} else {  // Step 3B
 					// Both v and v' exist
 					v3 = v2.L[j];  // v'' in notes
-					headI = Ii;
+					headI = ti + 1;
 					e = v3.childEdges[alphabet.getIndex(c)];
 
-					// FIXME: Head might be 0 (there is no childNode for char c).
-					if (e != null) {
+					if (e != null) {  // head(i) == 0
 						z = e.childNode;
 					}
 					// Head(i) ends Ii characters below v'' on edge e
@@ -134,40 +133,58 @@ public class SuffixTree {
 			// TODO: Clean this up!
 			Node w;  // node at end of Head(i) (might already exist):
 			Node leaf = new Node(i, alphabet.length);
-			int sufLength = m - i;
 
-			// FIXME: Remove this, just use path depth
-			// FIXME: This should not be necessary; the new edge (w, li) should
-			//   be of length m + 1 - i - headi
-			if (v3 != null) {
-				// Adjust sufLength for current pathdepth
-				// FIXME: Is this OK; is algorithm still O(m)?
-				sufLength -= ((ti + 1) - headI);  // to account for x when deciding start
-				// of leafi's suffix
-			}
-
-			if (e != null) {
-				if (verbose)
-					System.out.println("Inserting node w into edge e");
-
-				w = Edge.insertLeafNode(leaf, e, i, headI, sufLength, string, alphabet, 0);
-				// 4: set indicator vector for w:
-				w.I = z.I.clone();  // update (4)
-			} else if (v2 != null) {
-				// FIXME: will both v'' exist and e not exist always result in this?
-				// head(i) = 0, but v'' exists; insert new edge coming from v'':
-				if (verbose)
-					System.out.println("w is v3, creating new edge.");
-				w = v3;
-				e = new Edge(i + 1, string.length-1);
-				Edge.connectNodes(w, leaf, e, string, alphabet);
-				
+			if (v != null) {
+				if (v2 == null) {  // from 3A
+					// Head(i) ends ti+1 characters from root on edge e
+					w = new Node(-1, alphabet.length);
+					Edge.insertNode(w, e, headI, string, alphabet);
+				} else {  // from 3B
+					// Head(i) ends Ii characters onto edge e (or on node v'')
+					if (Ii == 0) {
+						w = v3;
+					} else {
+						w = new Node(-1, alphabet.length);
+						Edge.insertNode(w, e, Ii, string, alphabet);
+					}
+				}
 			} else {
-				// Insert at root:
-				if (verbose)
-					System.out.println("w is root; creating new edge.");
-				w = Edge.insertLeafNode(leaf, root, i, headI, string, alphabet);
+				// Head(i) ends at root
+				w = root;
 			}
+
+			if (verbose)
+				System.out.println("\tw=" + w);
+			
+			// Create edge connecting Node W to leafi:
+			int newEdgeStart = i + headI;
+			Edge edgeWI = new Edge(newEdgeStart , m-1);
+			Edge.connectNodes(w, leaf, edgeWI, string, alphabet);
+
+			// TODO: Replacing below with above:
+
+//			if (e != null) {
+//				if (verbose)
+//					System.out.println("Inserting node w into edge e");
+//
+//				w = Edge.insertLeafNode(leaf, e, i, headI, sufLength, string, alphabet, 0);
+//				// 4: set indicator vector for w:
+//				w.I = z.I.clone();  // update (4)
+//			} else if (v2 != null) {
+//				// FIXME: will both v'' exist and e not exist always result in this?
+//				// head(i) = 0, but v'' exists; insert new edge coming from v'':
+//				if (verbose)
+//					System.out.println("w is v3, creating new edge.");
+//				w = v3;
+//				e = new Edge(i + 1, string.length-1);
+//				Edge.connectNodes(w, leaf, e, string, alphabet);
+//				
+//			} else {
+//				// Insert at root:
+//				if (verbose)
+//					System.out.println("w is root; creating new edge.");
+//				w = Edge.insertLeafNode(leaf, root, i, headI, string, alphabet);
+//			}
 
 
 			if (verbose) {
@@ -175,7 +192,9 @@ public class SuffixTree {
 				System.out.println("\tleafi=" + leaf);
 			}
 
-			// Update Link Vectors:
+			// Update Indicator and Link Vectors:
+			if (z != null)
+				w.I = z.I.clone();
 			updateLinkVectors(i, v, w);
 
 			// Update curNode:
@@ -331,21 +350,21 @@ public class SuffixTree {
 		// Test 5:
 		alphabet = new Alphabet(new char[] {'a', 'c', 't', 'g', '$'});
 		System.out.println("Test 5:");
-		testOnString("tttt$$",
+		testOnString("tttt$",
 				new String[] {"tga", "$", "tttt", "ttt", "tt", "t"},
 				alphabet, false);
 		
 		// Test 6a:
 		alphabet = new Alphabet(new char[] {'a', 'c', 't', 'g', '$'});
 		System.out.println("Test 6a:");
-		testOnString("ctttt$$",
+		testOnString("ctttt$",
 				new String[] {"ttt", "tttt", "tt", "tcttt", "ct"},
 				alphabet, false);
 
 		// Test 6b:
 		alphabet = new Alphabet(new char[] {'a', 'c', 't', 'g', '$'});
 		System.out.println("Test 6b:");
-		testOnString("ttcttt$$",
+		testOnString("ttcttt$",
 				new String[] {"t", "ttt", "tttt", "tt"},
 				alphabet, false);
 
@@ -452,10 +471,10 @@ public class SuffixTree {
 			searchResults.sort(null);
 			System.out.println(String.format("pattern=%s: %s", pattern,
 					searchResults.toString()));
-			
+
 			// Compare searchResults to expectedValues:
 			if (expectedValues != null) {
-				
+
 				boolean success = true;
 				if (searchResults.size() == expectedValues[i].length) {
 					for (int j = 0; j < searchResults.size(); j++) {
@@ -475,7 +494,7 @@ public class SuffixTree {
 				}
 			}
 		}
-		
+
 		System.out.println("-------------");
 	}
 
