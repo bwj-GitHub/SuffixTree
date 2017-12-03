@@ -462,17 +462,17 @@ public class SuffixTree {
 				alphabet, false);
 
 		// Test 14:
-		// TODO: Missing a bannana?
 		testOnString("apple bannananutcoffe and other stuff will make a sentence that is very long. apple bannana orange apple sunday peanut coffee$",
 				new String[] {"$", "apple", "coffe", "coffee", "bannana", "nut"},
 				alphabet, false);
 
-		// FIXME: Doesn't work:
+		// Test 15:
 		shortAlphabet = new Alphabet("anx$".toCharArray());
 		testOnString("nanxana$",
 				new String[] {"$", "na"}, shortAlphabet, false);
+		
 	}
-	
+
 	public static void testOnString(String string, String[] patterns,
 			int[][] expectedValues, Alphabet alphabet, boolean verbose) {
 		// Build SuffixTree:
@@ -486,7 +486,7 @@ public class SuffixTree {
 			referenceIndex += i % 10;
 		}
 		System.out.println(referenceIndex);
-		
+
 		// Search for Patterns:
 		ArrayList<Integer> searchResults;
 		for (int i = 0; i < patterns.length; i++) {
