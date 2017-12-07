@@ -126,6 +126,7 @@ public class TestSuffixTree {
 	
 	public static void doSmallPatternTests() {
 		Alphabet alphabet = new Alphabet("acgt$".toCharArray());
+		System.out.println("Varying String Length Tests:");
 		String repeated = "attctgctagctgccatgga";  // 20 chars
 		String searchSequence = "taggaattcttatagcacgg";  // 20chars, 'tagg' is unique
 
@@ -189,6 +190,7 @@ public class TestSuffixTree {
 
 	public static void doVaryingPatternSizeTests() {
 		Alphabet alphabet = new Alphabet("acgt$".toCharArray());
+		System.out.println("\nVarying Pattern Length Tests:");
 
 		// Create strings:
 		String repeated = "attctgctagctgccatgga";  // 20 chars
@@ -217,7 +219,6 @@ public class TestSuffixTree {
 		// Test Pattern 2k chars:
 		System.out.println("2k");
 		String test1 = s320k + p2k + getRepeatedString(repeated, 15900) + "$";
-//		String test1 = s320k + p2k + s320k + "$";
 		multiRunTest(test1, p2k, alphabet, 10);
 		multiRunNaiveSearch(test1, p2k, 10);
 		System.out.println("--");
@@ -225,7 +226,6 @@ public class TestSuffixTree {
 		// Test Pattern 4k chars:
 		System.out.println("4k");
 		String test2 = s320k + p4k + getRepeatedString(repeated, 15800) + "$";
-//		String test2 = s320k + p4k + s320k + "$";
 		multiRunTest(test2, p4k, alphabet, 10);
 		multiRunNaiveSearch(test2, p4k, 10);
 		System.out.println("--");
@@ -233,7 +233,6 @@ public class TestSuffixTree {
 		// Test Pattern 8k chars:
 		System.out.println("8k");
 		String test3 = s320k + p8k + getRepeatedString(repeated, 15600) + "$";
-//		String test3 = s320k + p8k + s320k + "$";
 		multiRunTest(test3, p8k, alphabet, 10);
 		multiRunNaiveSearch(test3, p8k, 10);
 		System.out.println("--");
@@ -241,7 +240,6 @@ public class TestSuffixTree {
 		// Test Pattern 16k chars:
 		System.out.println("16k");
 		String test4 = s320k + p16k + getRepeatedString(repeated, 15200) + "$";
-//		String test4 = s320k + p16k + s320k + "$";
 		multiRunTest(test4, p16k, alphabet, 10);
 		multiRunNaiveSearch(test4, p16k, 5);
 		System.out.println("--");
@@ -249,7 +247,6 @@ public class TestSuffixTree {
 		// Test Pattern 32k chars:
 		System.out.println("32k");
 		String test5 = s320k + p32k + getRepeatedString(repeated, 14400) + "$";
-//		String test5 = s320k + p32k + s320k + "$";
 		multiRunTest(test5, p32k, alphabet, 10);
 		multiRunNaiveSearch(test5, p32k, 5);
 		System.out.println("--");
@@ -257,7 +254,6 @@ public class TestSuffixTree {
 		// Test Pattern 64k chars:
 		System.out.println("64k");
 		String test6 = s320k + p64k + getRepeatedString(repeated, 12800) + "$";
-//		String test6 = s320k + p64k + s320k + "$";
 		multiRunTest(test6, p64k, alphabet, 10);
 		multiRunNaiveSearch(test6, p64k, 5);
 		System.out.println("--");
@@ -265,8 +261,14 @@ public class TestSuffixTree {
 
 	}
 
+	/**
+	 * Compare runtime of suffix tree search to naive search for varying k.
+	 * 
+	 * k is the number of matches of the pattern in the string.
+	 */
 	public static void doVaryingK() {
 		Alphabet alphabet = new Alphabet("acgt$".toCharArray());
+		System.out.println("\nVarying k Tests:");
 
 		// Create strings:
 		String repeated = "attctgctagctgccatgga";  // 20 chars
@@ -295,42 +297,36 @@ public class TestSuffixTree {
 
 		// Test 100 matches:
 		String test0 = s320k + p2k + getRepeatedString(repeated, 15900) + "$";
-//		String test0 = s320k + p2k + s320k + "$";
 		multiRunTest(test0, p20, alphabet, 10);
 		multiRunNaiveSearch(test0, p20, 10);
 		System.out.println("-------");
 
 		// Test 200 matches:
 		String test1 = s320k + p4k + getRepeatedString(repeated, 15800) + "$";
-//		String test1 = s320k + p4k + s320k + "$";
 		multiRunTest(test1, p20, alphabet, 10);
 		multiRunNaiveSearch(test1, p20, 10);
 		System.out.println("-------");
 
 		// Test 400 matches:
 		String test2 = s320k + p8k + getRepeatedString(repeated, 15600) + "$";
-//		String test2 = s320k + p8k + s320k + "$";
 		multiRunTest(test2, p20, alphabet, 10);
 		multiRunNaiveSearch(test2, p20, 10);
 		System.out.println("-------");
 
 		// Test 800 matches:
 		String test3 = s320k + p16k + getRepeatedString(repeated, 15200) + "$";
-//		String test3 = s320k + p16k + s320k + "$";
 		multiRunTest(test3, p20, alphabet, 10);
 		multiRunNaiveSearch(test3, p20, 10);
 		System.out.println("-------");
 
 		// Test 1600 matches: -800
 		String test4 = s320k + p32k + getRepeatedString(repeated, 14400) + "$";
-//		String test4 = s320k + p32k + s320k + "$";
 		multiRunTest(test4, p20, alphabet, 10);
 		multiRunNaiveSearch(test4, p20, 10);
 		System.out.println("-------");
 
 		// Test 3200 matches:
 		String test5 = s320k + p64k + getRepeatedString(repeated, 12800) + "$";
-//		String test5 = s320k + p64k + s320k + "$";
 		multiRunTest(test5, p20, alphabet, 10);
 		multiRunNaiveSearch(test5, p20, 10);
 		System.out.println("-------");
@@ -338,28 +334,24 @@ public class TestSuffixTree {
 		// Test 4800 matches:
 		
 		String test5b = s320k + p64k + getRepeatedString(repeated, 11200) + p32k + "$";
-//		String test5b = s320k + p64k + s320k + "$";
 		multiRunTest(test5b, p20, alphabet, 10);
 		multiRunNaiveSearch(test5b, p20, 10);
 		System.out.println("-------");
 
 		// Test 6400 matches:
 		String test6 = s320k + p128k + getRepeatedString(repeated, 9600) + "$";
-//		String test6 = s320k + p128k + s320k + "$";
 		multiRunTest(test6, p20, alphabet, 10);
 		multiRunNaiveSearch(test6, p20, 10);
 		System.out.println("-------");
 
 		// Test 9600 matches:
 		String test6b = s320k + p128k + getRepeatedString(repeated, 6400) + p64k + "$";
-//		String test6b = s320k + p128k + s320k + p64k + "$";
 		multiRunTest(test6b, p20, alphabet, 10);
 		multiRunNaiveSearch(test6b, p20, 10);
 		System.out.println("-------");
 
 		// Test 12800 matches:
 		String test7 = s320k + p128k + getRepeatedString(repeated, 3200) + p128k + "$";
-//		String test7 = s320k + p128k + s320k + p128k + "$";
 		multiRunTest(test7, p20, alphabet, 10);
 		multiRunNaiveSearch(test7, p20, 10);
 		System.out.println("-------");
@@ -373,20 +365,9 @@ public class TestSuffixTree {
 	}
 
 	public static void main(String[] args) {
-//		doSmallPatternTests();
-//		doVaryingPatternSizeTests();
-//		doVaryingK();
-
-		// Test very large string sizes:
-		Alphabet alphabet = new Alphabet("acgt$".toCharArray());
-		String p20 = "taggaattcttatagcacgg";  // 20chars, 'tagg' is unique
-		String repeated = "attctgctagctgccatgga";  // 20 chars
-		String p2k = getRepeatedString(p20, 100);  // 2k chars
-		String s1280k = getRepeatedString(repeated, 26500) + p2k + "$";
-		long startTime = System.currentTimeMillis();
-		SuffixTree ST = new SuffixTree(s1280k.toCharArray(), alphabet, false);
-		long endTime = System.currentTimeMillis();
-		System.out.println(endTime - startTime);
+		doSmallPatternTests();
+		doVaryingPatternSizeTests();
+		doVaryingK();
 
 	}
 
